@@ -1,0 +1,7 @@
+{
+  "name": "Quoka Getter",
+  "content_in_root": false,
+  "country": "de",
+  "domains": ["sensor"],
+  "render_readme": true
+}

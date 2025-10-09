@@ -1,0 +1,33 @@
+{
+  "title": "Quoka Getter",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configure Quoka search",
+        "description": "Provide at least one search term. Separate multiple values with commas.",
+        "data": {
+          "search_terms": "Search terms",
+          "categories": "Categories",
+          "update_interval": "Update interval (minutes)"
+        }
+      }
+    },
+    "error": {
+      "required": "This field is required.",
+      "min_value": "Please enter a value greater than or equal to 5."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Quoka options",
+        "description": "Adjust search terms, categories, and interval.",
+        "data": {
+          "search_terms": "Search terms",
+          "categories": "Categories",
+          "update_interval": "Update interval (minutes)"
+        }
+      }
+    }
+  }
+}
