@@ -11,8 +11,10 @@ from homeassistant.data_entry_flow import FlowResult
 
 from .const import (
     CONF_CATEGORIES,
+    CONF_MAX_LISTINGS,
     CONF_SEARCH_TERMS,
     CONF_UPDATE_INTERVAL,
+    DEFAULT_MAX_LISTINGS,
     DEFAULT_UPDATE_INTERVAL,
     DOMAIN,
 )
@@ -38,8 +40,11 @@ class QuokaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             else:
                 categories = _split_csv(user_input.get(CONF_CATEGORIES))
                 update_interval = user_input.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)
+                max_listings = user_input.get(CONF_MAX_LISTINGS, DEFAULT_MAX_LISTINGS)
                 if update_interval < 5:
                     errors[CONF_UPDATE_INTERVAL] = "min_value"
+                if max_listings < 1:
+                    errors[CONF_MAX_LISTINGS] = "min_value_listings"
                 if not errors:
                     return self.async_create_entry(
                         title=", ".join(search_terms),
@@ -47,6 +52,7 @@ class QuokaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                             CONF_SEARCH_TERMS: search_terms,
                             CONF_CATEGORIES: categories,
                             CONF_UPDATE_INTERVAL: update_interval,
+                            CONF_MAX_LISTINGS: max_listings,
                         },
                     )
 
@@ -58,6 +64,10 @@ class QuokaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Optional(
                     CONF_UPDATE_INTERVAL,
                     default=defaults.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL),
+                ): int,
+                vol.Optional(
+                    CONF_MAX_LISTINGS,
+                    default=defaults.get(CONF_MAX_LISTINGS, DEFAULT_MAX_LISTINGS),
                 ): int,
             }
         )
@@ -82,8 +92,11 @@ class QuokaOptionsFlow(config_entries.OptionsFlow):
             else:
                 categories = _split_csv(user_input.get(CONF_CATEGORIES))
                 update_interval = user_input.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)
+                max_listings = user_input.get(CONF_MAX_LISTINGS, DEFAULT_MAX_LISTINGS)
                 if update_interval < 5:
                     errors[CONF_UPDATE_INTERVAL] = "min_value"
+                if max_listings < 1:
+                    errors[CONF_MAX_LISTINGS] = "min_value_listings"
                 if not errors:
                     return self.async_create_entry(
                         title=self.config_entry.title,
@@ -91,6 +104,7 @@ class QuokaOptionsFlow(config_entries.OptionsFlow):
                             CONF_SEARCH_TERMS: search_terms,
                             CONF_CATEGORIES: categories,
                             CONF_UPDATE_INTERVAL: update_interval,
+                            CONF_MAX_LISTINGS: max_listings,
                         },
                     )
 
@@ -99,7 +113,14 @@ class QuokaOptionsFlow(config_entries.OptionsFlow):
             {
                 vol.Required(CONF_SEARCH_TERMS, default=", ".join(data.get(CONF_SEARCH_TERMS, []))): str,
                 vol.Optional(CONF_CATEGORIES, default=", ".join(data.get(CONF_CATEGORIES, []))): str,
-                vol.Optional(CONF_UPDATE_INTERVAL, default=data.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)): int,
+                vol.Optional(
+                    CONF_UPDATE_INTERVAL,
+                    default=data.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL),
+                ): int,
+                vol.Optional(
+                    CONF_MAX_LISTINGS,
+                    default=data.get(CONF_MAX_LISTINGS, DEFAULT_MAX_LISTINGS),
+                ): int,
             }
         )
         return self.async_show_form(step_id="init", data_schema=options_schema, errors=errors)
