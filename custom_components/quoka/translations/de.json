@@ -1,0 +1,33 @@
+{
+  "title": "Quoka Getter",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Quoka Suche konfigurieren",
+        "description": "Gib mindestens einen Suchbegriff ein. Mehrere Werte können mit Komma getrennt werden.",
+        "data": {
+          "search_terms": "Suchbegriffe",
+          "categories": "Kategorien",
+          "update_interval": "Aktualisierungsintervall (Minuten)"
+        }
+      }
+    },
+    "error": {
+      "required": "Dieses Feld ist erforderlich.",
+      "min_value": "Bitte einen Wert größer oder gleich 5 eingeben."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Quoka Optionen",
+        "description": "Passe Suchbegriffe, Kategorien und Intervall an.",
+        "data": {
+          "search_terms": "Suchbegriffe",
+          "categories": "Kategorien",
+          "update_interval": "Aktualisierungsintervall (Minuten)"
+        }
+      }
+    }
+  }
+}
