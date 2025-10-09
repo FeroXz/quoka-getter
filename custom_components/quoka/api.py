@@ -93,7 +93,11 @@ class QuokaApiClient:
             location_elem = card.select_one("span.result-list-entry__city")
             location = location_elem.get_text(strip=True) if location_elem else None
             image_elem = card.select_one("img")
-            image = image_elem.get("data-src") or image_elem.get("src") if image_elem else None
+            image = (
+                (image_elem.get("data-src") or image_elem.get("src"))
+                if image_elem
+                else None
+            )
             timestamp_elem = card.select_one("time")
             published: datetime | None = None
             if timestamp_elem and timestamp_elem.has_attr("datetime"):
