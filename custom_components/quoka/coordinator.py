@@ -13,8 +13,10 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from .api import QuokaApiClient, QuokaListing
 from .const import (
     CONF_CATEGORIES,
+    CONF_MAX_LISTINGS,
     CONF_SEARCH_TERMS,
     CONF_UPDATE_INTERVAL,
+    DEFAULT_MAX_LISTINGS,
     DEFAULT_UPDATE_INTERVAL,
 )
 
@@ -27,6 +29,7 @@ class QuokaDataUpdateCoordinator(DataUpdateCoordinator[list[QuokaListing]]):
     def __init__(self, hass: HomeAssistant, session: ClientSession, entry_data: dict[str, Any]) -> None:
         self.api = QuokaApiClient(session)
         self.entry_data = entry_data
+        self._history: list[QuokaListing] = []
         update_interval = entry_data.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)
         super().__init__(
             hass,
@@ -38,7 +41,22 @@ class QuokaDataUpdateCoordinator(DataUpdateCoordinator[list[QuokaListing]]):
     async def _async_update_data(self) -> list[QuokaListing]:
         search_terms = self.entry_data.get(CONF_SEARCH_TERMS, [])
         categories = self.entry_data.get(CONF_CATEGORIES, [])
-        return await self.api.async_search(search_terms, categories)
+        max_listings = self.entry_data.get(CONF_MAX_LISTINGS, DEFAULT_MAX_LISTINGS)
+        fresh_listings = await self.api.async_search(search_terms, categories, max_listings)
+
+        seen: set[str] = {item.url for item in fresh_listings}
+        combined = list(fresh_listings)
+
+        for item in self._history:
+            if item.url in seen:
+                continue
+            combined.append(item)
+            seen.add(item.url)
+            if len(combined) >= max_listings:
+                break
+
+        self._history = combined[:max_listings]
+        return self._history
 
     async def async_set_entry_data(self, new_data: dict[str, Any]) -> None:
         """Update coordinator configuration when options change."""
@@ -46,4 +64,7 @@ class QuokaDataUpdateCoordinator(DataUpdateCoordinator[list[QuokaListing]]):
         self.entry_data = new_data
         update_interval = new_data.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)
         self.update_interval = timedelta(minutes=update_interval)
+        max_listings = new_data.get(CONF_MAX_LISTINGS, DEFAULT_MAX_LISTINGS)
+        if len(self._history) > max_listings:
+            self._history = self._history[:max_listings]
         await self.async_request_refresh()

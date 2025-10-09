@@ -42,6 +42,24 @@ class QuokaCard extends HTMLElement {
         :host {
           display: block;
         }
+        .actions {
+          display: flex;
+          justify-content: flex-end;
+          margin-bottom: 12px;
+        }
+        .refresh-button {
+          background: var(--primary-color);
+          border: none;
+          border-radius: 4px;
+          color: var(--text-primary-color, #fff);
+          cursor: pointer;
+          font: inherit;
+          padding: 6px 12px;
+          transition: filter 0.2s ease;
+        }
+        .refresh-button:hover {
+          filter: brightness(0.95);
+        }
         .container {
           display: grid;
           gap: 12px;
@@ -106,12 +124,27 @@ class QuokaCard extends HTMLElement {
 
     this.shadowRoot.innerHTML = `
       <ha-card header="${cardTitle}">
+        <div class="actions">
+          <button class="refresh-button" type="button">Jetzt aktualisieren</button>
+        </div>
         <div class="container">
           ${content || `<div class="meta">Keine Ergebnisse gefunden.</div>`}
         </div>
       </ha-card>
       ${style}
     `;
+
+    const refreshButton = this.shadowRoot.querySelector(".refresh-button");
+    if (refreshButton) {
+      refreshButton.addEventListener("click", () => {
+        if (!this._hass) {
+          return;
+        }
+        this._hass.callService("quoka", "refresh", {
+          entity_id: this._config.entity,
+        });
+      });
+    }
   }
 }
 

@@ -8,7 +8,13 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import CONF_CATEGORIES, CONF_SEARCH_TERMS, DOMAIN
+from .const import (
+    CONF_CATEGORIES,
+    CONF_MAX_LISTINGS,
+    CONF_SEARCH_TERMS,
+    DEFAULT_MAX_LISTINGS,
+    DOMAIN,
+)
 from .coordinator import QuokaDataUpdateCoordinator
 
 
@@ -51,5 +57,8 @@ class QuokaSensor(CoordinatorEntity[QuokaDataUpdateCoordinator], SensorEntity):
         return {
             "search_terms": self.coordinator.entry_data.get(CONF_SEARCH_TERMS, []),
             "categories": self.coordinator.entry_data.get(CONF_CATEGORIES, []),
+            "max_listings": self.coordinator.entry_data.get(
+                CONF_MAX_LISTINGS, DEFAULT_MAX_LISTINGS
+            ),
             "listings": listings,
         }

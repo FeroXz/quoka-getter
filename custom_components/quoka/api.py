@@ -11,7 +11,7 @@ from urllib.parse import quote_plus
 import aiohttp
 from bs4 import BeautifulSoup
 
-from .const import API_BASE_URL, HEADERS, MAX_ITEMS
+from .const import API_BASE_URL, DEFAULT_MAX_LISTINGS, HEADERS
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -35,7 +35,12 @@ class QuokaApiClient:
         self._session = session
         self._lock = asyncio.Lock()
 
-    async def async_search(self, search_terms: list[str], categories: list[str]) -> list[QuokaListing]:
+    async def async_search(
+        self,
+        search_terms: list[str],
+        categories: list[str],
+        max_items: int | None = None,
+    ) -> list[QuokaListing]:
         """Fetch listings for the given search terms and categories."""
 
         if not search_terms:
@@ -61,12 +66,13 @@ class QuokaApiClient:
         # Deduplicate by URL while preserving order
         seen: set[str] = set()
         unique_listings = []
+        max_results = max_items or DEFAULT_MAX_LISTINGS
         for item in listings:
             if item.url in seen:
                 continue
             seen.add(item.url)
             unique_listings.append(item)
-            if len(unique_listings) >= MAX_ITEMS:
+            if len(unique_listings) >= max_results:
                 break
 
         return unique_listings

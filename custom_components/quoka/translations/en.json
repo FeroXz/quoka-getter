@@ -8,13 +8,15 @@
         "data": {
           "search_terms": "Search terms",
           "categories": "Categories",
-          "update_interval": "Update interval (minutes)"
+          "update_interval": "Update interval (minutes)",
+          "max_listings": "Maximum number of listings"
         }
       }
     },
     "error": {
       "required": "This field is required.",
-      "min_value": "Please enter a value greater than or equal to 5."
+      "min_value": "Please enter a value greater than or equal to 5.",
+      "min_value_listings": "Please enter a value greater than or equal to 1."
     }
   },
   "options": {
@@ -25,7 +27,8 @@
         "data": {
           "search_terms": "Search terms",
           "categories": "Categories",
-          "update_interval": "Update interval (minutes)"
+          "update_interval": "Update interval (minutes)",
+          "max_listings": "Maximum number of listings"
         }
       }
     }
