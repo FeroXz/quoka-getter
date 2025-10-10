@@ -4,7 +4,9 @@
   "integration_type": "service",
   "codeowners": ["@your-github"],
 
+
   "version": "0.2.3",
+
 
   "documentation": "https://github.com/your-github/quoka-getter",
   "requirements": ["beautifulsoup4>=4.12.0"],

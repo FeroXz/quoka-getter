@@ -67,9 +67,11 @@ class QuokaApiClient:
             raise ValueError("At least one search term is required")
 
         listings: list[QuokaListing] = []
+
         for query, term in queries:
             try:
                 results = await self._fetch_listings(query)
+
             except Exception:  # noqa: BLE001
                 _LOGGER.exception("Failed to fetch listings for query %s", query)
                 continue
