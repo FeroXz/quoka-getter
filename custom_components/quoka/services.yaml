@@ -1,0 +1,14 @@
+refresh:
+  name: "Aktualisieren"
+  description: "Löst eine sofortige Aktualisierung der Quoka-Daten aus."
+  target:
+    entity:
+      integration: quoka
+  fields:
+    entity_id:
+      name: "Entity"
+      description: "Optional: Eingrenzung auf bestimmte Quoka-Entities."
+      example: "sensor.quoka_listings"
+      selector:
+        entity:
+          integration: quoka
