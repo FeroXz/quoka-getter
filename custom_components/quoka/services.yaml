@@ -1,11 +1,11 @@
 refresh:
-  name: Aktualisieren
-  description: "Fordere eine sofortige Aktualisierung der Quoka-Suchanfragen an."
+  name: Anzeigen aktualisieren
+  description: Fordere eine sofortige Aktualisierung der Quoka-Suchanfragen an.
+  target:
+    entity:
+      integration: quoka
   fields:
     entity_id:
       name: Sensor oder Button
-      description: "Optionale Entity-ID eines Quoka-Sensors oder -Buttons, für den die Aktualisierung angefordert werden soll."
+      description: Optionale Entity-ID eines Quoka-Sensors oder -Buttons, für den die Aktualisierung angefordert werden soll.
       example: sensor.quoka_listings
-      selector:
-        entity:
-          integration: quoka
