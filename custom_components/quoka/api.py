@@ -66,15 +66,14 @@ class QuokaApiClient:
         if not queries:
             raise ValueError("At least one search term is required")
 
-        listings: list[QuokaListing] = []
+        async def fetch_and_filter(query: str, term: str) -> list[QuokaListing]:
+            """Fetch listings for a query and apply the term filter."""
 
-        for query, term in queries:
             try:
                 results = await self._fetch_listings(query)
-
             except Exception:  # noqa: BLE001
                 _LOGGER.exception("Failed to fetch listings for query %s", query)
-                continue
+                return []
 
             term_key = term.casefold()
             filtered_results = [
@@ -87,7 +86,23 @@ class QuokaApiClient:
                     query,
                     term,
                 )
-            listings.extend(filtered_results)
+            return filtered_results
+
+        listings: list[QuokaListing] = []
+        results_by_query = await asyncio.gather(
+            *(fetch_and_filter(query, term) for query, term in queries),
+            return_exceptions=True,
+        )
+
+        for result in results_by_query:
+            if isinstance(result, Exception):
+                _LOGGER.error(
+                    "Unexpected error while gathering listings: %s",
+                    result,
+                    exc_info=(type(result), result, result.__traceback__),
+                )
+                continue
+            listings.extend(result)
 
         # Deduplicate by URL while preserving order
         seen: set[str] = set()
