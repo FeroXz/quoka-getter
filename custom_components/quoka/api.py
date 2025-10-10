@@ -81,9 +81,15 @@ class QuokaApiClient:
         """Fetch listings for a single query."""
 
         async with self._lock:
-            response = await self._session.get(f"{API_BASE_URL}{query}", headers=HEADERS, timeout=30)
-        response.raise_for_status()
-        html = await response.text()
+            async with self._session.get(
+                f"{API_BASE_URL}{query}", headers=HEADERS, timeout=30
+            ) as response:
+                if response.status == 404:
+                    _LOGGER.debug("Query %s returned 404 – treating as empty result", query)
+                    await response.read()
+                    return []
+                response.raise_for_status()
+                html = await response.text()
         soup = BeautifulSoup(html, "html.parser")
         cards = soup.select("article")
 

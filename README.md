@@ -31,6 +31,8 @@ Eine Home Assistant Integration, die automatisch aktuelle Inserate von [Quoka](h
 - [x] Manueller Aktualisierungs-Button inklusive Service für Sofortabfragen
 - [x] Konfigurierbare Obergrenze für die Anzahl geladener Inserate
 - [x] Historie behält ältere Inserate bis zur definierten Obergrenze bei
+- [x] Fehlertolerante Behandlung nicht verfügbarer Suchseiten (404)
+
 
 ## Entwicklung
 
