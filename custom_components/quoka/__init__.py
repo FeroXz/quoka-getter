@@ -6,16 +6,24 @@ from typing import Any
 
 import voluptuous as vol
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import HomeAssistant, ServiceCall
-from homeassistant.helpers import config_validation as cv, entity_registry as er
+from homeassistant.helpers import (
+    config_validation as cv,
+    entity_registry as er,
+    service as ha_service,
+)
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import DOMAIN, PLATFORMS, SERVICE_REFRESH
 from .coordinator import QuokaDataUpdateCoordinator
 
 ConfigEntryType = ConfigEntry[Any]
-_SERVICE_REFRESH_SCHEMA = vol.Schema({vol.Optional(ATTR_ENTITY_ID): cv.entity_ids})
+_SERVICE_REFRESH_SCHEMA = vol.Schema(
+    {
+        **cv.TARGET_SERVICE_FIELDS,
+    },
+    extra=vol.ALLOW_EXTRA,
+)
 
 
 async def async_setup(hass: HomeAssistant, config: dict[str, Any]) -> bool:
@@ -26,8 +34,10 @@ async def async_setup(hass: HomeAssistant, config: dict[str, Any]) -> bool:
     if not hass.services.has_service(DOMAIN, SERVICE_REFRESH):
 
         async def _handle_refresh(call: ServiceCall) -> None:
-            entity_ids: list[str] | None = call.data.get(ATTR_ENTITY_ID)
-            await _async_request_refresh(hass, entity_ids)
+            entity_ids = await ha_service.async_extract_entity_ids(hass, call)
+            await _async_request_refresh(
+                hass, list(entity_ids) if entity_ids else None
+            )
 
         hass.services.async_register(
             DOMAIN,
