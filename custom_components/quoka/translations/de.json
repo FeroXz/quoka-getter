@@ -8,13 +8,15 @@
         "data": {
           "search_terms": "Suchbegriffe",
           "categories": "Kategorien",
-          "update_interval": "Aktualisierungsintervall (Minuten)"
+          "update_interval": "Aktualisierungsintervall (Minuten)",
+          "max_listings": "Maximale Anzahl an Inseraten"
         }
       }
     },
     "error": {
       "required": "Dieses Feld ist erforderlich.",
-      "min_value": "Bitte einen Wert größer oder gleich 5 eingeben."
+      "min_value": "Bitte einen Wert größer oder gleich 5 eingeben.",
+      "min_value_listings": "Bitte einen Wert größer oder gleich 1 eingeben."
     }
   },
   "options": {
@@ -25,7 +27,8 @@
         "data": {
           "search_terms": "Suchbegriffe",
           "categories": "Kategorien",
-          "update_interval": "Aktualisierungsintervall (Minuten)"
+          "update_interval": "Aktualisierungsintervall (Minuten)",
+          "max_listings": "Maximale Anzahl an Inseraten"
         }
       }
     }

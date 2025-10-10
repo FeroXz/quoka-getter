@@ -11,7 +11,7 @@ from urllib.parse import quote_plus
 import aiohttp
 from bs4 import BeautifulSoup
 
-from .const import API_BASE_URL, HEADERS, MAX_ITEMS
+from .const import API_BASE_URL, DEFAULT_MAX_LISTINGS, HEADERS
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -35,7 +35,12 @@ class QuokaApiClient:
         self._session = session
         self._lock = asyncio.Lock()
 
-    async def async_search(self, search_terms: list[str], categories: list[str]) -> list[QuokaListing]:
+    async def async_search(
+        self,
+        search_terms: list[str],
+        categories: list[str],
+        max_items: int | None = None,
+    ) -> list[QuokaListing]:
         """Fetch listings for the given search terms and categories."""
 
         if not search_terms:
@@ -61,12 +66,13 @@ class QuokaApiClient:
         # Deduplicate by URL while preserving order
         seen: set[str] = set()
         unique_listings = []
+        max_results = max_items or DEFAULT_MAX_LISTINGS
         for item in listings:
             if item.url in seen:
                 continue
             seen.add(item.url)
             unique_listings.append(item)
-            if len(unique_listings) >= MAX_ITEMS:
+            if len(unique_listings) >= max_results:
                 break
 
         return unique_listings
@@ -75,9 +81,15 @@ class QuokaApiClient:
         """Fetch listings for a single query."""
 
         async with self._lock:
-            response = await self._session.get(f"{API_BASE_URL}{query}", headers=HEADERS, timeout=30)
-        response.raise_for_status()
-        html = await response.text()
+            async with self._session.get(
+                f"{API_BASE_URL}{query}", headers=HEADERS, timeout=30
+            ) as response:
+                if response.status == 404:
+                    _LOGGER.debug("Query %s returned 404 – treating as empty result", query)
+                    await response.read()
+                    return []
+                response.raise_for_status()
+                html = await response.text()
         soup = BeautifulSoup(html, "html.parser")
         cards = soup.select("article")
 
@@ -93,7 +105,11 @@ class QuokaApiClient:
             location_elem = card.select_one("span.result-list-entry__city")
             location = location_elem.get_text(strip=True) if location_elem else None
             image_elem = card.select_one("img")
-            image = image_elem.get("data-src") or image_elem.get("src") if image_elem else None
+            image = (
+                (image_elem.get("data-src") or image_elem.get("src"))
+                if image_elem
+                else None
+            )
             timestamp_elem = card.select_one("time")
             published: datetime | None = None
             if timestamp_elem and timestamp_elem.has_attr("datetime"):
