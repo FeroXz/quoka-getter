@@ -2,7 +2,8 @@
   "name": "Quoka Card",
   "filename": "quoka-card.js",
 
-  "version": "0.2.2",
+  "version": "0.2.3",
+
 
   "type": "module",
   "description": "Card to display Quoka classified listings."

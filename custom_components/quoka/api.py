@@ -67,14 +67,11 @@ class QuokaApiClient:
             raise ValueError("At least one search term is required")
 
         listings: list[QuokaListing] = []
-        tasks = {
-            asyncio.create_task(self._fetch_listings(query)): (query, term)
-            for query, term in queries
-        }
-        for future in asyncio.as_completed(tasks):
-            query, term = tasks[future]
+
+        for query, term in queries:
             try:
-                results = await future
+                results = await self._fetch_listings(query)
+
             except Exception:  # noqa: BLE001
                 _LOGGER.exception("Failed to fetch listings for query %s", query)
                 continue

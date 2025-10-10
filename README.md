@@ -35,6 +35,7 @@ Eine Home Assistant Integration, die automatisch aktuelle Inserate von [Quoka](h
 - [x] Home-Assistant-konforme Service-Definition mit gültigem Schema für `quoka.refresh`
 
 - [x] Teilstring-Abgleich für Suchbegriffe, damit auch erweiterte Titel gefunden werden
+- [x] Stabiler Abruf mehrerer Suchbegriffe ohne parallele Race-Conditions
 
 
 
