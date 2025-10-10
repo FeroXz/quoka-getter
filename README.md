@@ -28,6 +28,11 @@ Eine Home Assistant Integration, die automatisch aktuelle Inserate von [Quoka](h
 - [x] GUI-Konfiguration mit Unterstützung für mehrere Suchbegriffe und Kategorien
 - [x] Datenaktualisierung über einen DataUpdateCoordinator mit einstellbarem Intervall
 - [x] Bereitstellung einer Lovelace-Karte (`quoka-card`) zur Visualisierung der Inserate
+- [x] Manueller Aktualisierungs-Button inklusive Service für Sofortabfragen
+- [x] Konfigurierbare Obergrenze für die Anzahl geladener Inserate
+- [x] Historie behält ältere Inserate bis zur definierten Obergrenze bei
+- [x] Fehlertolerante Behandlung nicht verfügbarer Suchseiten (404)
+
 
 ## Entwicklung
 

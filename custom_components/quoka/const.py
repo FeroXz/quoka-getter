@@ -3,14 +3,15 @@
 from __future__ import annotations
 
 DOMAIN = "quoka"
-PLATFORMS: list[str] = ["sensor"]
+PLATFORMS: list[str] = ["sensor", "button"]
 
 CONF_SEARCH_TERMS = "search_terms"
 CONF_CATEGORIES = "categories"
 CONF_UPDATE_INTERVAL = "update_interval"
+CONF_MAX_LISTINGS = "max_listings"
 
 DEFAULT_UPDATE_INTERVAL = 30  # minutes
-MAX_ITEMS = 20
+DEFAULT_MAX_LISTINGS = 20
 API_BASE_URL = "https://www.quoka.de/q/"
 HEADERS = {
     "User-Agent": (
@@ -18,3 +19,4 @@ HEADERS = {
         "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     )
 }
+SERVICE_REFRESH = "refresh"
