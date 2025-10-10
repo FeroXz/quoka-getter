@@ -36,6 +36,8 @@ Eine Home Assistant Integration, die automatisch aktuelle Inserate von [Quoka](h
 
 - [x] Teilstring-Abgleich für Suchbegriffe, damit auch erweiterte Titel gefunden werden
 - [x] Stabiler Abruf mehrerer Suchbegriffe ohne parallele Race-Conditions
+- [x] Fehlerrobuste Zusammenführung paralleler Suchabfragen mit sauberer Fehlerprotokollierung
+- [x] Vollständige Ergebnislisten ohne nachträgliche Titel-Filterung
 
 
 
