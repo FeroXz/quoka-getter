@@ -46,22 +46,46 @@ class QuokaApiClient:
         if not search_terms:
             raise ValueError("At least one search term is required")
 
-        queries = []
+        queries: list[tuple[str, str]] = []
         for term in search_terms:
-            encoded_term = quote_plus(term.strip())
+            normalized_term = term.strip()
+            if not normalized_term:
+                continue
+            encoded_term = quote_plus(normalized_term)
             if categories:
                 for category in categories:
-                    queries.append(f"{encoded_term}/{quote_plus(category.strip())}")
+                    queries.append(
+                        (
+                            f"{encoded_term}/{quote_plus(category.strip())}",
+                            normalized_term,
+                        )
+                    )
             else:
-                queries.append(encoded_term)
+                queries.append((encoded_term, normalized_term))
+
+        if not queries:
+            raise ValueError("At least one search term is required")
 
         listings: list[QuokaListing] = []
-        tasks = [self._fetch_listings(query) for query in queries]
-        for future in asyncio.as_completed(tasks):
+        for query, term in queries:
             try:
-                listings.extend(await future)
+                results = await self._fetch_listings(query)
             except Exception:  # noqa: BLE001
-                _LOGGER.exception("Failed to fetch listings for a query")
+                _LOGGER.exception("Failed to fetch listings for query %s", query)
+                continue
+
+            term_key = term.casefold()
+            filtered_results = [
+                item for item in results if term_key in item.title.casefold()
+            ]
+            if not filtered_results and results:
+                _LOGGER.debug(
+                    "Discarded %s listings for query %s because they did not match %s",
+                    len(results),
+                    query,
+                    term,
+                )
+            listings.extend(filtered_results)
 
         # Deduplicate by URL while preserving order
         seen: set[str] = set()
