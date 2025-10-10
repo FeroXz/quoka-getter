@@ -33,7 +33,9 @@ Eine Home Assistant Integration, die automatisch aktuelle Inserate von [Quoka](h
 - [x] Historie behält ältere Inserate bis zur definierten Obergrenze bei
 - [x] Fehlertolerante Behandlung nicht verfügbarer Suchseiten (404)
 - [x] Home-Assistant-konforme Service-Definition mit gültigem Schema für `quoka.refresh`
+
 - [x] Teilstring-Abgleich für Suchbegriffe, damit auch erweiterte Titel gefunden werden
+
 
 
 ## Entwicklung
