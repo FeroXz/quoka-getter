@@ -1,6 +1,7 @@
 # .github/workflows/automerge.yml
 name: automerge-all
 on:
+  workflow_dispatch: {}   
   pull_request:
     types: [opened, reopened, synchronize, edited, ready_for_review, labeled, unlabeled]
   pull_request_review:
