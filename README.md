@@ -36,6 +36,13 @@ Eine Home Assistant Integration, die automatisch aktuelle Inserate von [Quoka](h
 
 - [x] Teilstring-Abgleich für Suchbegriffe, damit auch erweiterte Titel gefunden werden
 - [x] Stabiler Abruf mehrerer Suchbegriffe ohne parallele Race-Conditions
+- [x] Fehlerrobuste Zusammenführung paralleler Suchabfragen mit sauberer Fehlerprotokollierung
+- [x] Vollständige Ergebnislisten ohne nachträgliche Titel-Filterung
+- [x] Aktualisierte Parser für die neue Quoka-Suchergebnisseite unter `/anzeigen`
+- [x] Zielgenaue Treffer dank Nutzung des offiziellen `q`-Suchparameters
+- [x] Intelligente Normalisierung von Kategorienamen, Pfaden und URLs für passgenaue Suchfilter
+- [x] Browser-konforme HTTP-Header inkl. Sec-Fetch-Unterstützung für stabile Ergebnisse
+- [x] Responsives Dashboard-Design mit leserlicher Darstellung aller Inserate
 
 
 
